@@ -220,15 +220,6 @@
                 Voltando" representa o feedback de localização, onde dispositivos de consumo e rastreadores industriais
                 informam sua posição através de ecossistemas híbridos que fundem Bluetooth Low Energy (BLE), UWB e redes
                 de satélites.</p>
-
-            <p>Do ponto de vista de Redes de Computadores, esse ciclo pode ser entendido como uma troca constante entre
-                duas perguntas: <strong>"para onde devo encaminhar o pacote?"</strong> e <strong>"onde está o nó ou o
-                ativo que desejo alcançar?"</strong>. A primeira pergunta aparece nos protocolos de roteamento geográfico,
-                nos quais cada nó toma decisões usando apenas a posição do destino e a posição de seus vizinhos imediatos.
-                A segunda aparece nos serviços de localização, responsáveis por armazenar, atualizar e consultar a posição
-                de nós móveis em uma rede distribuída. Essa separação é importante porque o roteamento geográfico só é
-                realmente útil quando existe algum mecanismo capaz de fornecer ao remetente a posição aproximada do
-                destinatário. [3][13]</p>
         </section>
 
         <section id="p1">
@@ -258,6 +249,13 @@
                 eliminando a necessidade de manter tabelas de roteamento globais complexas.
             </p>
 
+            <p>Segundo os levantamentos sobre protocolos geográficos em MANETs e VANETs, a principal vantagem desse
+                modelo é reduzir o volume de informações de controle espalhadas pela rede. Como cada nó toma decisões
+                com base apenas na posição do destino e dos vizinhos próximos, o protocolo tende a escalar melhor em
+                redes móveis do que abordagens puramente baseadas em tabelas de rotas. Porém, essa eficiência depende da
+                qualidade das informações de localização: erros de GPS, atraso nos beacons ou alta velocidade dos nós
+                podem fazer com que o próximo salto escolhido já não esteja mais disponível no momento da transmissão.</p>
+
             <h3>Recuperação de Vazios e Roteamento de Perímetro</h3>
             <p>O modo guloso falha quando um nó não possui vizinhos mais próximos do destino do que ele mesmo, fenômeno
                 conhecido como
@@ -269,6 +267,11 @@
                 possa ser
                 retomado.</p>
 
+            <p>Na prática, a literatura mostra que esse processo de recuperação é uma das partes mais delicadas do
+                roteamento geográfico. Para que o pacote contorne corretamente uma região sem conectividade, o grafo da
+                rede precisa ser simplificado sem criar cruzamentos indevidos entre enlaces. Essa etapa é importante
+                porque transforma uma decisão aparentemente simples — “ir para o vizinho mais próximo” — em um processo
+                capaz de lidar com obstáculos, falhas de comunicação e áreas sem nós intermediários.</p>
             <h3>Desafios em Ambientes Tridimensionais e Geocasting</h3>
             <p>Em Redes de Drones (FANETs), a planarização de grafos em 3D é geometricamente impossível, tornando a
                 recuperação de
@@ -278,6 +281,12 @@
                 geográfico ao definir uma
                 "região de interesse" como destino, onde todos os nós dentro de uma área específica devem receber o
                 pacote.</p>
+
+            <p>Esse ponto aproxima o tema de aplicações reais de redes veiculares, sensores e emergência. Em vez de
+                enviar uma mensagem para um único nó final, o geocasting permite entregar informações para todos os
+                dispositivos dentro de uma área, como veículos próximos de um acidente, sensores em uma zona de risco ou
+                drones dentro de uma região de busca. Assim, a localização deixa de ser apenas uma coordenada individual
+                e passa a funcionar como critério de endereçamento da própria rede.</p>
         </section>
 
         <section id="p2">
@@ -309,6 +318,12 @@
                 <li><strong>SmartThings Find:</strong> A Samsung opera modelo similar, permitindo que dispositivos
                     Galaxy atuem como "Find Nodes" para localizar SmartTags e relógios.</li>
             </ul>
+
+            <p>Do ponto de vista de Redes de Computadores, essas redes de busca offline funcionam como uma forma de
+                comunicação oportunista: o rastreador não precisa estar conectado diretamente à internet, pois utiliza
+                dispositivos de terceiros como pontes temporárias até a nuvem. Esse conceito é semelhante à ideia de
+                redes tolerantes a atraso, nas quais a mensagem pode ser carregada por nós intermediários até encontrar
+                uma conexão disponível.</p>
 
             <h3>Comunicação entre serviços: Apple e Samsung</h3>
 
@@ -350,6 +365,11 @@
                     áreas rurais,
                     permitindo redes privadas sem custo de operadora.</li>
             </ul>
+
+            <p>Essas tecnologias mostram que a escolha da rede depende do cenário de uso. Em ambientes urbanos, BLE e
+                redes colaborativas são vantajosos pela grande quantidade de smartphones próximos. Já em aplicações
+                industriais, rurais ou logísticas, tecnologias LPWAN e celulares de baixo consumo são mais adequadas por
+                oferecerem maior alcance e menor dependência de usuários ao redor.</p>
         </section>
 
         <section id="p3">
@@ -373,6 +393,11 @@
                     intenção e a segurança humana.</li>
             </ul>
 
+            <p>Além da tecnologia de rádio utilizada, a precisão de um sistema de localização também depende do ambiente
+                físico. Em locais fechados, sinais podem sofrer reflexão, bloqueio por paredes e interferência de outros
+                dispositivos. Por isso, tecnologias como UWB tendem a ser mais precisas que estimativas por RSSI, pois
+                medem o tempo de propagação do sinal em vez de depender apenas da intensidade recebida.</p>
+
             <h3>Segurança e Privacidade no Ciclo de Localização</h3>
             <p>A ubíquidade da localização traz riscos severos de perseguição (stalking).</p>
 
@@ -384,17 +409,49 @@
                     alertas sonoros e notificações digitais após 30 minutos de separação do dono.</li>
 
             </ul>
+
+            <p>Assim, a geolocalização pessoal precisa equilibrar utilidade e proteção. Um sistema eficiente deve ser
+                capaz de localizar pessoas, objetos ou ativos com baixa latência, mas também precisa limitar o acesso a
+                esses dados, usar criptografia e informar o usuário quando houver risco de rastreamento não autorizado.</p>
         </section>
 
-        <section id="sintese-tecnica">
-            <h2>Síntese Técnica do Estudo</h2>
-            <p>Com base na bibliografia consultada, os sistemas de geolocalização pessoal podem ser entendidos como a combinação de três etapas: estimar a posição do dispositivo, transmitir essa posição pela rede e utilizar essa informação para tomada de decisão. No roteamento geográfico, a posição orienta o caminho do pacote; no rastreamento pessoal, a posição retorna ao usuário como uma informação de localização.</p>
+        <section id="complemento">
+            <h2>Tópicos Complementares da Pesquisa</h2>
 
-            <p>As referências sobre MANETs, VANETs e redes de sensores mostram que a principal vantagem do roteamento geográfico é a escalabilidade: em vez de manter rotas completas para todos os destinos, cada nó toma decisões locais com base nas coordenadas dos vizinhos. Porém, essa abordagem depende de localização atualizada, boa conectividade sem fio e mecanismos de recuperação quando o encaminhamento guloso encontra vazios de roteamento.</p>
+            <h3>Serviços de Localização em Redes Ad Hoc</h3>
+            <p>Um ponto importante da bibliografia é que o roteamento geográfico não depende apenas de saber a posição
+                dos vizinhos imediatos. Para enviar um pacote até um destino, o nó de origem também precisa descobrir ou
+                estimar onde esse destino está. Por isso, alguns trabalhos estudam serviços de localização escaláveis,
+                responsáveis por armazenar e atualizar a posição dos nós sem exigir que toda a rede conheça toda a
+                topologia.</p>
 
-            <p>Já nos sistemas de rastreamento pessoal e industrial, o desafio deixa de ser apenas encaminhar pacotes e passa a envolver privacidade, consumo de energia, frequência de atualização e precisão. Tecnologias como BLE, UWB, LTE-M, NB-IoT e LoRaWAN mostram que não existe uma única solução ideal: cada aplicação escolhe um equilíbrio diferente entre alcance, custo, bateria e precisão.</p>
+            <p>Esse serviço de localização funciona como uma camada de apoio: antes do encaminhamento, o sistema obtém
+                uma coordenada aproximada do destino; depois, o roteamento guloso tenta aproximar o pacote dessa região.
+                Assim, a geolocalização passa a ter duas funções complementares: localizar o nó e usar essa localização
+                como critério de roteamento.</p>
+
+            <h3>Impacto da Mobilidade e dos Erros de Posição</h3>
+            <p>Outro tema recorrente nas referências é o efeito da mobilidade. Em redes móveis, a posição usada para
+                tomar a decisão de roteamento pode ficar desatualizada rapidamente. Isso acontece porque os nós continuam
+                se deslocando entre uma atualização de beacon e outra. Como consequência, um vizinho escolhido como
+                próximo salto pode sair do alcance de transmissão antes que o pacote seja entregue.</p>
+
+            <p>Além disso, erros de GPS ou de sistemas indoor podem gerar escolhas incorretas. Um nó pode parecer mais
+                próximo do destino no cálculo, mas na prática estar em uma posição diferente. Esse problema mostra que
+                sistemas de geolocalização pessoal precisam equilibrar frequência de atualização, consumo de energia,
+                precisão e volume de tráfego de controle.</p>
+
+            <h3>Aplicações e Limitações Práticas</h3>
+            <p>Na prática, os sistemas de geolocalização pessoal combinam diferentes tecnologias de rede. GPS é mais
+                adequado para ambientes externos; BLE é útil para proximidade e objetos pessoais; UWB melhora a precisão
+                em curtas distâncias; e redes celulares, LTE-M, NB-IoT ou LoRaWAN ajudam em aplicações de maior alcance,
+                como frotas, sensores e rastreamento industrial.</p>
+
+            <p>Essa combinação reforça a ideia central do trabalho: a localização não é apenas uma informação adicional,
+                mas um elemento de decisão da própria rede. Ela orienta o caminho do pacote, permite o retorno de dados
+                de telemetria e cria novas formas de comunicação baseadas em posição, como geocasting, redes veiculares,
+                rastreamento de ativos e localização de dispositivos pessoais.</p>
         </section>
-
 
         <section id="conclusao">
             <h2>Conclusão</h2>
@@ -406,12 +463,6 @@
                 conexão física com
                 o mundo real. O futuro aponta para um sistema inteligente e autônomo, onde a localização será precisa,
                 privada e global.</p>
-
-            <p>Assim, o estudo mostra que a geolocalização não deve ser vista apenas como um recurso de mapa, mas como
-                uma informação de rede. Ela orienta o encaminhamento, reduz a necessidade de tabelas globais, permite
-                serviços distribuídos de localização e viabiliza aplicações de rastreamento pessoal e industrial. Ao
-                mesmo tempo, ela cria desafios de segurança, privacidade, energia e confiabilidade, especialmente quando
-                a rede é móvel, densa, irregular ou sujeita a erros de localização.</p>
         </section>
 
         <section id="referencias">
