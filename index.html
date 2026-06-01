@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistemas de Geolocalização Pessoal</title>
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --text-color: #333;
+            --bg-color: #f8f9fa;
+            --white: #ffffff;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+            text-align: center;
+            padding: 4rem 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            font-weight: 300;
+            opacity: 0.95;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        main {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        section {
+            background-color: var(--white);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            margin: 1.5rem 0 1rem 0;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            text-align: justify;
+        }
+
+        strong {
+            color: var(--primary-color);
+        }
+
+        .image-container {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+        }
+
+        .image-caption {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.5rem;
+            font-style: italic;
+            text-align: center;
+        }
+
+        .math-box,
+        .highlight-box {
+            background-color: #eef6ff;
+            border-left: 5px solid var(--secondary-color);
+            padding: 1.2rem;
+            border-radius: 6px;
+            margin: 1.5rem 0;
+        }
+
+        .warning-box {
+            background-color: #fff3cd;
+            border-left: 5px solid var(--warning-color);
+            padding: 1.2rem;
+            border-radius: 6px;
+            margin: 1.5rem 0;
+        }
+
+        .danger-box {
+            background-color: #fdecea;
+            border-left: 5px solid var(--danger-color);
+            padding: 1.2rem;
+            border-radius: 6px;
+            margin: 1.5rem 0;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            margin: 2rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--white);
+        }
+
+        th,
+        td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            vertical-align: top;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        ul {
+            list-style-type: none;
+            margin-left: 1rem;
+        }
+
+        ul li {
+            margin-bottom: 0.8rem;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        ul li::before {
+            content: '→';
+            color: var(--secondary-color);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        ol {
+            margin-left: 1.5rem;
+        }
+
+        ol li {
+            margin-bottom: 0.7rem;
+        }
+
+        a {
+            color: var(--secondary-color);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        code {
+            background-color: #f1f1f1;
+            padding: 0.15rem 0.35rem;
+            border-radius: 4px;
+        }
+
+        .flow {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .flow-step {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 90px;
+        }
+
+        .flow-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary-color);
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .tags {
+            margin: 1rem 0;
+        }
+
+        .tag {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 0.25rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin: 0.2rem;
+        }
+
+        footer {
+            background-color: var(--primary-color);
+            color: var(--white);
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        footer p {
+            text-align: center;
+            margin-bottom: 0;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 3rem 1rem;
+            }
+
+            header h1 {
+                font-size: 2rem;
+            }
+
+            header p {
+                font-size: 1rem;
+            }
+
+            main {
+                padding: 0 1rem;
+            }
+
+            section {
+                padding: 1.5rem;
+            }
+
+            .flow {
+                grid-template-columns: 1fr;
+            }
+
+            .flow-arrow {
+                transform: rotate(90deg);
+            }
+
+            table,
+            thead,
+            tbody,
+            th,
+            td,
+            tr {
+                display: block;
+            }
+
+            thead {
+                display: none;
+            }
+
+            tr {
+                border: 1px solid #ccc;
+                margin-bottom: 1rem;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+
+            td {
+                border: none;
+                border-bottom: 1px solid #eee;
+                position: relative;
+                padding-left: 45%;
+                min-height: 60px;
+            }
+
+            td::before {
+                position: absolute;
+                top: 1rem;
+                left: 1rem;
+                width: 38%;
+                padding-right: 10px;
+                white-space: normal;
+                font-weight: bold;
+                color: var(--primary-color);
+                content: attr(data-label);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Sistemas de Geolocalização Pessoal</h1>
+        <p>O ciclo da localização: da entrega de pacotes ao rastreamento de dispositivos.</p>
+        <p>Pesquisa Técnica da Disciplina Redes de Computadores I.</p>
+    </header>
+
+    <main>
+        <section id="introducao">
+            <h2>Introdução</h2>
+
+            <p>
+                A geolocalização pessoal é o conjunto de tecnologias que permite identificar, transmitir e utilizar
+                a posição de pessoas, dispositivos móveis, veículos e objetos conectados. Ela está presente em
+                aplicativos de mapas, serviços de entrega, rastreadores Bluetooth, relógios inteligentes, celulares
+                e sistemas de segurança.
+            </p>
+
+            <p>
+                Em Redes de Computadores, a geolocalização pode aparecer de duas formas principais. A primeira é no
+                <strong>encaminhamento de pacotes</strong>, quando a posição física dos nós ajuda a decidir o próximo
+                salto da mensagem. A segunda é no <strong>rastreamento</strong>, quando um dispositivo envia ou permite
+                inferir sua posição por meio de redes como GPS, Bluetooth Low Energy, Wi-Fi, redes celulares e LPWAN.
+            </p>
+
+            <div class="highlight-box">
+                <p>
+                    Neste trabalho, chamamos de <strong>“Pacote Indo”</strong> o uso da localização para entregar
+                    informações pela rede, como no roteamento geográfico. Já o <strong>“Pacote Voltando”</strong>
+                    representa o caminho inverso: o dispositivo, objeto ou pessoa envia informações de localização
+                    de volta para um usuário, servidor ou aplicativo.
+                </p>
+            </div>
+        </section>
+
+        <section id="camadas">
+            <h2>Geolocalização nas Camadas de Rede</h2>
+
+            <p>
+                A geolocalização pessoal não depende de uma única tecnologia. Ela é resultado da combinação entre
+                hardware de rádio, protocolos de comunicação, redes de acesso, servidores e aplicações.
+            </p>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Camada</th>
+                            <th>Relação com geolocalização</th>
+                            <th>Exemplos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Camada">Física</td>
+                            <td data-label="Relação">Transmissão do sinal, potência, frequência, interferência e tempo de propagação.</td>
+                            <td data-label="Exemplos">BLE, UWB, Wi-Fi, GPS, rádio celular.</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Camada">Enlace</td>
+                            <td data-label="Relação">Comunicação local entre dispositivos próximos.</td>
+                            <td data-label="Exemplos">Beacons Bluetooth, endereços MAC, redes Wi-Fi.</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Camada">Rede</td>
+                            <td data-label="Relação">Uso da posição para encaminhar pacotes ou escolher rotas.</td>
+                            <td data-label="Exemplos">Roteamento geográfico, MANETs, VANETs, GPSR.</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Camada">Transporte</td>
+                            <td data-label="Relação">Entrega dos dados de localização entre dispositivo, servidor e aplicação.</td>
+                            <td data-label="Exemplos">TCP, UDP, MQTT em IoT.</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Camada">Aplicação</td>
+                            <td data-label="Relação">Serviços que interpretam e exibem a localização ao usuário.</td>
+                            <td data-label="Exemplos">Find My, SmartThings Find, Google Maps, rastreamento de frotas.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="tecnologias">
+            <h2>Tecnologias de Localização Pessoal</h2>
+
+            <p>
+                Sistemas de geolocalização pessoal combinam diferentes tecnologias, pois cada uma possui vantagens
+                e limitações. A escolha depende do ambiente, do alcance necessário, da precisão desejada e do consumo
+                de energia.
+            </p>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tecnologia</th>
+                            <th>Como funciona</th>
+                            <th>Melhor uso</th>
+                            <th>Limitação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Tecnologia">GPS/GNSS</td>
+                            <td data-label="Como funciona">Recebe sinais de satélites para calcular posição.</td>
+                            <td data-label="Melhor uso">Ambientes externos, veículos, celulares e relógios.</td>
+                            <td data-label="Limitação">Perde precisão em ambientes internos ou entre prédios altos.</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Tecnologia">Wi-Fi</td>
+                            <td data-label="Como funciona">Estima a posição com base em redes próximas e intensidade do sinal.</td>
+                            <td data-label="Melhor uso">Ambientes internos e áreas urbanas.</td>
+                            <td data-label="Limitação">Depende de mapas ou bases de dados de redes conhecidas.</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Tecnologia">Rede celular</td>
+                            <td data-label="Como funciona">Usa torres de telefonia para estimar localização.</td>
+                            <td data-label="Melhor uso">Cobertura ampla e localização aproximada.</td>
+                            <td data-label="Limitação">Menor precisão quando comparada a GPS ou UWB.</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Tecnologia">BLE</td>
+                            <td data-label="Como funciona">Emite pequenos pacotes de rádio de baixa energia.</td>
+                            <td data-label="Melhor uso">Rastreadores pessoais, beacons e objetos próximos.</td>
+                            <td data-label="Limitação">Curto alcance e dependência de dispositivos próximos.</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Tecnologia">UWB</td>
+                            <td data-label="Como funciona">Mede distância pelo tempo de voo de pulsos de rádio.</td>
+                            <td data-label="Melhor uso">Localização precisa em curta distância.</td>
+                            <td data-label="Limitação">Exige hardware compatível.</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Tecnologia">LPWAN</td>
+                            <td data-label="Como funciona">Usa redes de baixo consumo e longo alcance.</td>
+                            <td data-label="Melhor uso">IoT, veículos, sensores e rastreamento industrial.</td>
+                            <td data-label="Limitação">Baixa taxa de transmissão de dados.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="p1">
+            <h2>Engenharia de Roteamento Geográfico</h2>
+
+            <p>
+                O roteamento geográfico, também chamado de roteamento baseado em posição, utiliza a premissa de que
+                cada nó conhece sua própria localização e a localização de seus vizinhos imediatos. Esse conhecimento
+                pode ser obtido por GPS, sistemas indoor, sensores ou mensagens periódicas chamadas de
+                <em>beacons</em>.
+            </p>
+
+            <p>
+                Em redes móveis, como MANETs, VANETs e redes de drones, a topologia muda rapidamente. Por isso,
+                manter tabelas globais de roteamento pode se tornar custoso ou ineficiente. O roteamento geográfico
+                tenta resolver esse problema usando a posição física como critério de decisão.
+            </p>
+
+            <div class="tags">
+                <span class="tag">MANET</span>
+                <span class="tag">VANET</span>
+                <span class="tag">FANET</span>
+                <span class="tag">GPSR</span>
+                <span class="tag">Greedy Forwarding</span>
+            </div>
+
+            <h3>O Algoritmo de Encaminhamento Guloso — Greedy Forwarding</h3>
+
+            <p>
+                O mecanismo primário de entrega em redes geolocalizadas é o
+                <strong>encaminhamento guloso</strong>, ou <em>greedy forwarding</em>. Neste modelo, um nó atual
+                seleciona, entre seus vizinhos, aquele que está mais próximo do destino.
+            </p>
+
+            <div class="math-box">
+                <p>A distância pode ser calculada pela fórmula da distância euclidiana no espaço tridimensional:</p>
+                \[
+                    d(v_i, D) = \sqrt{(x_i - x_d)^2 + (y_i - y_d)^2 + (z_i - z_d)^2}
+                \]
+            </div>
+
+            <p>
+                Onde \((x_i, y_i, z_i)\) representam as coordenadas do vizinho e
+                \((x_d, y_d, z_d)\) representam as coordenadas do destino. O pacote é encaminhado para o vizinho
+                que possuir a menor distância até o destino.
+            </p>
+
+            <div class="highlight-box">
+                <p>
+                    A grande vantagem do Greedy Forwarding é que ele exige apenas conhecimento local: o nó precisa
+                    saber sua própria posição, a posição dos vizinhos e a posição do destino. Ele não precisa conhecer
+                    toda a topologia da rede.
+                </p>
+            </div>
+
+            <h3>Exemplo de Decisão</h3>
+
+            <p>
+                Imagine que o pacote esteja no nó A e precise chegar ao nó D. O nó A possui dois vizinhos possíveis:
+                B e C. Se C estiver mais próximo do destino do que B, o pacote será enviado para C. Essa escolha é
+                considerada “gulosa” porque a decisão busca o melhor próximo passo local, sem calcular necessariamente
+                a melhor rota global.
+            </p>
+
+            <h3>Recuperação de Vazios e Roteamento de Perímetro</h3>
+
+            <p>
+                O modo guloso pode falhar quando o nó atual não possui nenhum vizinho mais próximo do destino do que
+                ele mesmo. Esse problema é conhecido como <strong>máximo local</strong> ou
+                <strong>vazio de roteamento</strong>.
+            </p>
+
+            <p>
+                Protocolos como o <strong>Greedy Perimeter Stateless Routing</strong> — GPSR — tentam resolver esse
+                problema usando o roteamento de perímetro. Nesse modo, o pacote percorre as bordas de uma região da
+                rede até encontrar um ponto onde o encaminhamento guloso possa ser retomado.
+            </p>
+
+            <h3>Desafios em Ambientes Tridimensionais e Geocasting</h3>
+
+            <p>
+                Em redes de drones, chamadas de FANETs, o problema se torna mais complexo porque os nós se movem em
+                três dimensões. Isso dificulta a aplicação direta de técnicas de planarização usadas em redes 2D.
+                Protocolos modernos podem utilizar predição de trajetória, mobilidade estimada e otimização
+                multiobjetivo para manter a conectividade.
+            </p>
+
+            <p>
+                Além disso, o <strong>geocasting</strong> expande o roteamento geográfico ao definir uma região de
+                interesse como destino. Nesse caso, todos os nós dentro de uma área específica devem receber o pacote.
+            </p>
+        </section>
+
+        <section id="p2">
+            <h2>O Pacote Voltando: Protocolos de Rastreamento e Telemetria</h2>
+
+            <p>
+                Enquanto o roteamento geográfico foca na entrega de pacotes, os serviços de localização pessoal focam
+                no reporte da posição. Dispositivos modernos utilizam redes colaborativas para permitir que objetos,
+                celulares e acessórios sejam encontrados mesmo quando não possuem conexão direta com a internet.
+            </p>
+
+            <h3>Redes de Busca Offline — OFN: Apple e Samsung</h3>
+
+            <p>
+                Redes de busca offline, ou <em>Offline Finding Networks</em>, funcionam a partir da colaboração entre
+                muitos dispositivos próximos. Um rastreador ou aparelho perdido emite sinais Bluetooth de baixa energia.
+                Outros dispositivos da mesma rede, quando passam por perto e estão conectados à internet, podem enviar
+                um relatório criptografado para o serviço do fabricante.
+            </p>
+
+            <p>
+                <strong>Beacons BLE</strong>, ou Bluetooth Low Energy, são pequenos sinais de rádio de curto alcance.
+                Eles funcionam como “faróis” digitais: anunciam a presença de um dispositivo próximo, sem exigir uma
+                conexão Bluetooth tradicional permanente.
+            </p>
+
+            <ul>
+                <li>
+                    <strong>Localização Offline:</strong> quando um rastreador ou dispositivo compatível está sem
+                    conexão direta com a internet, ele pode emitir sinais Bluetooth de baixa energia. Dispositivos
+                    próximos detectam esses sinais e enviam um relatório de localização criptografado para a rede
+                    do fabricante.
+                </li>
+                <li>
+                    <strong>Criptografia:</strong> o relatório de localização é protegido por mecanismos de criptografia
+                    e identificadores rotativos. Isso reduz a exposição da identidade do rastreador e impede que o
+                    dispositivo que encontrou o sinal saiba diretamente quem é o dono.
+                </li>
+                <li>
+                    <strong>SmartThings Find:</strong> a Samsung opera um modelo semelhante, permitindo que dispositivos
+                    Galaxy atuem como nós de busca para localizar SmartTags, relógios e outros dispositivos compatíveis.
+                </li>
+            </ul>
+
+            <h3>Fluxo do Pacote Voltando</h3>
+
+            <p>
+                Em redes de busca offline, o rastreador não precisa se conectar diretamente à internet. Ele apenas
+                anuncia sua presença por Bluetooth. Quem faz a ponte com a internet é outro dispositivo próximo,
+                como um smartphone conectado.
+            </p>
+
+            <div class="flow">
+                <div class="flow-step">Rastreador perdido emite beacon BLE</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">Celular próximo detecta o sinal</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">Servidor recebe relatório criptografado</div>
+            </div>
+
+            <div class="flow">
+                <div class="flow-step">Dono abre o aplicativo</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">Servidor retorna a última localização</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">Objeto ou dispositivo é encontrado</div>
+            </div>
+
+            <h3>Comunicação entre Ecossistemas: Apple, Google e Samsung</h3>
+
+            <p>
+                Os ecossistemas de localização não funcionam como uma única rede universal de busca. Em geral, um
+                iPhone não atua diretamente como nó de localização para um rastreador Samsung, e um celular Samsung
+                não atua diretamente como nó de localização para um AirTag com o objetivo de ajudar o dono a encontrá-lo.
+            </p>
+
+            <p>
+                Porém, existe cooperação para fins de <strong>segurança e privacidade</strong>. Apple e Google criaram
+                mecanismos para que dispositivos Android e iOS possam detectar rastreadores Bluetooth desconhecidos
+                se movendo junto com o usuário, reduzindo o risco de perseguição e rastreamento abusivo.
+            </p>
+
+            <ul>
+                <li>
+                    <strong>Alertas de Rastreamento Indevido:</strong> se alguém esconder uma AirTag em uma bolsa e
+                    a pessoa usar um celular Android, o sistema pode detectar que aquele acessório está se movendo
+                    junto com ela e exibir um alerta.
+                </li>
+                <li>
+                    <strong>O inverso também funciona:</strong> usuários de iPhone também podem receber alertas sobre
+                    rastreadores Bluetooth compatíveis que estejam se movendo junto com eles.
+                </li>
+            </ul>
+
+            <h3>Conectividade Industrial e LPWAN</h3>
+
+            <p>
+                Para rastreamento de veículos, cargas e ativos industriais, nem sempre há uma grande densidade de
+                smartphones próximos. Nesses casos, utilizam-se tecnologias de baixo consumo e longo alcance.
+            </p>
+
+            <ul>
+                <li>
+                    <strong>LTE-M e NB-IoT:</strong> tecnologias celulares voltadas para Internet das Coisas. Elas
+                    permitem conectar sensores, veículos e dispositivos com menor consumo de energia do que redes
+                    móveis tradicionais.
+                </li>
+                <li>
+                    <strong>LoRaWAN:</strong> protocolo de rede sem fio de longo alcance e baixo consumo. É útil em
+                    áreas rurais, industriais ou em redes privadas, mas possui baixa taxa de transmissão de dados.
+                </li>
+            </ul>
+        </section>
+
+        <section id="p3">
+            <h2>A Física da Resposta: Tecnologias de Precisão</h2>
+
+            <p>
+                A precisão de um sistema de geolocalização depende da forma como ele estima distância, direção ou
+                tempo de propagação do sinal. Em redes sem fio, diferentes técnicas podem ser usadas para transformar
+                sinais de rádio em uma posição aproximada.
+            </p>
+
+            <h3>Métodos de Estimativa de Localização</h3>
+
+            <ul>
+                <li>
+                    <strong>RSSI:</strong> estima a distância a partir da força do sinal recebido. É simples e barato,
+                    mas sofre bastante com obstáculos, paredes, interferências e reflexões do sinal.
+                </li>
+                <li>
+                    <strong>ToF — Time of Flight:</strong> calcula a distância medindo o tempo que o sinal leva para
+                    sair de um dispositivo e chegar ao outro. É mais preciso, mas exige relógios e hardware adequados.
+                </li>
+                <li>
+                    <strong>AoA — Angle of Arrival:</strong> estima a direção de chegada do sinal usando múltiplas
+                    antenas. Pode ser usado para localizar a posição aproximada de um dispositivo.
+                </li>
+                <li>
+                    <strong>TDoA — Time Difference of Arrival:</strong> usa a diferença de tempo de chegada do sinal
+                    em diferentes receptores para estimar a posição.
+                </li>
+            </ul>
+
+            <h3>Ultra-Wideband — UWB</h3>
+
+            <p>
+                O <strong>Ultra-Wideband</strong> opera com sinais de largura de banda muito alta e pulsos de curta
+                duração. Por isso, consegue medir com boa precisão o tempo de propagação do sinal entre dois
+                dispositivos. Em sistemas de geolocalização pessoal, o UWB é usado para localizar objetos próximos
+                com precisão muito maior do que tecnologias baseadas apenas na força do sinal.
+            </p>
+
+            <div class="highlight-box">
+                <p>
+                    Enquanto o Bluetooth tradicional costuma estimar proximidade pela intensidade do sinal, o UWB
+                    pode estimar distância com base no tempo de voo do sinal. Isso torna a localização mais precisa,
+                    principalmente em curtas distâncias.
+                </p>
+            </div>
+
+            <h3>Bluetooth e Channel Sounding</h3>
+
+            <p>
+                O Bluetooth também evolui para melhorar a estimativa de distância entre dispositivos. Técnicas como
+                medições de fase e análise do canal de rádio permitem que dispositivos Bluetooth estimem melhor a
+                proximidade entre si, reduzindo a dependência exclusiva do RSSI.
+            </p>
+
+            <h3>Segurança e Privacidade no Ciclo de Localização</h3>
+
+            <p>
+                A geolocalização pessoal traz benefícios claros, mas também cria riscos importantes. Um sistema capaz
+                de localizar objetos, celulares e pessoas pode ser usado de forma indevida para vigilância, perseguição
+                ou rastreamento sem consentimento.
+            </p>
+
+            <div class="danger-box">
+                <p>
+                    O principal risco social dos rastreadores pessoais é o <strong>stalking</strong>, quando uma pessoa
+                    esconde um dispositivo de localização em uma bolsa, carro, mochila ou objeto pessoal de outra pessoa
+                    para acompanhar seus deslocamentos.
+                </p>
+            </div>
+
+            <ul>
+                <li>
+                    <strong>Identificadores rotativos:</strong> dificultam que terceiros acompanhem um mesmo rastreador
+                    por muito tempo.
+                </li>
+                <li>
+                    <strong>Criptografia:</strong> protege os relatórios de localização durante o envio pela rede.
+                </li>
+                <li>
+                    <strong>Alertas de rastreador desconhecido:</strong> avisam o usuário quando um acessório de
+                    localização parece estar se movendo junto com ele.
+                </li>
+                <li>
+                    <strong>Padrão DULT:</strong> a especificação Detecting Unwanted Location Trackers permite que
+                    sistemas diferentes detectem rastreadores Bluetooth indesejados, aumentando a proteção contra
+                    rastreamento abusivo.
+                </li>
+            </ul>
+        </section>
+
+        <section id="limitacoes">
+            <h2>Limitações dos Sistemas de Geolocalização Pessoal</h2>
+
+            <p>
+                Embora sejam cada vez mais precisos, os sistemas de geolocalização pessoal ainda possuem limitações
+                técnicas importantes. Nenhuma tecnologia funciona perfeitamente em todos os ambientes.
+            </p>
+
+            <ul>
+                <li>
+                    <strong>GPS:</strong> funciona melhor em ambientes externos, mas pode falhar dentro de prédios,
+                    túneis ou locais com muitos obstáculos.
+                </li>
+                <li>
+                    <strong>BLE:</strong> consome pouca energia, mas depende da proximidade de outros dispositivos
+                    para que o rastreador seja encontrado.
+                </li>
+                <li>
+                    <strong>UWB:</strong> oferece alta precisão, mas exige chips compatíveis nos dispositivos envolvidos.
+                </li>
+                <li>
+                    <strong>LPWAN:</strong> é útil para IoT e rastreamento em longas distâncias, mas transmite poucos
+                    dados e não substitui redes de alta velocidade.
+                </li>
+                <li>
+                    <strong>Roteamento geográfico:</strong> depende de posições atualizadas. Se os nós se movem rápido
+                    ou informam coordenadas imprecisas, o pacote pode seguir uma rota ruim.
+                </li>
+            </ul>
+
+            <div class="warning-box">
+                <p>
+                    Portanto, sistemas reais costumam combinar várias tecnologias. Um celular, por exemplo, pode usar
+                    GPS, Wi-Fi, torres celulares, Bluetooth e sensores internos para estimar uma posição mais confiável.
+                </p>
+            </div>
+        </section>
+
+        <section id="estudo-caso">
+            <h2>Estudo de Caso: Celular Esquecido na Universidade</h2>
+
+            <p>
+                Imagine que um aluno esqueça o celular em uma sala da universidade. O aparelho pode estar sem conexão
+                direta com a internet, mas ainda assim outros dispositivos próximos podem detectar sinais Bluetooth
+                emitidos por ele ou por um rastreador associado.
+            </p>
+
+            <ul>
+                <li>O dispositivo perdido emite sinais BLE de baixa energia.</li>
+                <li>Celulares próximos detectam esses sinais.</li>
+                <li>Os celulares próximos enviam um relatório criptografado pela internet.</li>
+                <li>O servidor do serviço de localização recebe e armazena a última posição conhecida.</li>
+                <li>O dono abre o aplicativo e visualiza a localização aproximada do dispositivo.</li>
+            </ul>
+
+            <p>
+                Esse exemplo mostra como a geolocalização pessoal depende de várias camadas da rede: rádio Bluetooth
+                na comunicação local, internet para envio ao servidor e aplicação para exibir o resultado ao usuário.
+            </p>
+        </section>
+
+        <section id="perguntas">
+            <h2>Perguntas para Fixação</h2>
+
+            <h3>1. Qual é o algoritmo usado como base no roteamento geográfico simples?</h3>
+            <ul>
+                <li>A) Bellman-Ford</li>
+                <li>B) Dijkstra</li>
+                <li><strong>C) Greedy Forwarding</strong></li>
+                <li>D) Distância euclidiana</li>
+            </ul>
+
+            <h3>2. Na entrega de pacotes utilizando roteamento geográfico, precisamos saber:</h3>
+            <ul>
+                <li>A) Apenas o endereço IP de origem e de destino.</li>
+                <li>B) IP, porta de origem, porta de destino e protocolo.</li>
+                <li>C) Apenas a localização dos vizinhos.</li>
+                <li><strong>D) A localização própria, dos vizinhos e do destino do pacote.</strong></li>
+            </ul>
+
+            <h3>3. Sobre o rastreamento em redes de busca offline, é correto dizer:</h3>
+            <ul>
+                <li>A) Um aparelho desligado sempre manda sua própria localização diretamente para o servidor.</li>
+                <li><strong>B) Um dispositivo sem conexão direta pode emitir sinais BLE detectáveis por aparelhos próximos.</strong></li>
+                <li>C) Um celular Samsung sempre ajuda diretamente a localizar um AirTag para o dono.</li>
+                <li>D) Rastreadores pessoais não oferecem riscos de privacidade.</li>
+            </ul>
+
+            <h3>4. Qual padrão ajuda na detecção de rastreadores Bluetooth indesejados?</h3>
+            <ul>
+                <li><strong>A) Detecting Unwanted Location Trackers — DULT</strong></li>
+                <li>B) Detecting Stalkers Trackers — DST</li>
+                <li>C) Stalker Integration Xtreme — SIX</li>
+                <li>D) System Evaluation of Visible E-Stalker Nodes — SEVEN</li>
+            </ul>
+
+            <h3>5. Qual tecnologia é mais indicada para localização precisa em curta distância?</h3>
+            <ul>
+                <li><strong>A) UWB</strong></li>
+                <li>B) LoRaWAN</li>
+                <li>C) GPS em ambiente fechado</li>
+                <li>D) NB-IoT</li>
+            </ul>
+        </section>
+
+        <section id="conclusao">
+            <h2>Conclusão</h2>
+
+            <p>
+                Os sistemas de geolocalização pessoal mostram como a posição física se tornou uma informação essencial
+                nas redes modernas. No <strong>Pacote Indo</strong>, a localização ajuda a decidir por onde uma mensagem
+                deve passar, como ocorre no roteamento geográfico. No <strong>Pacote Voltando</strong>, a localização
+                retorna ao usuário por meio de tecnologias como BLE, GPS, UWB, redes celulares e LPWAN.
+            </p>
+
+            <p>
+                O grande desafio está em equilibrar eficiência, precisão, consumo de energia e privacidade. Quanto mais
+                precisos e conectados os sistemas se tornam, maior também é a responsabilidade de proteger os usuários
+                contra rastreamento indevido, vazamento de localização e uso abusivo dessas tecnologias.
+            </p>
+
+            <p>
+                Assim, a geolocalização pessoal não é apenas uma aplicação prática de redes sem fio: ela envolve
+                roteamento, protocolos, criptografia, sensores, infraestrutura colaborativa e decisões éticas sobre
+                segurança e privacidade.
+            </p>
+        </section>
+
+        <section id="referencias">
+            <h2>Referências Bibliográficas</h2>
+
+            <p>
+                As referências abaixo foram utilizadas para fundamentar os conceitos de roteamento geográfico,
+                redes móveis, localização sem fio e protocolos de rastreamento.
+            </p>
+
+            <ol>
+                <li>
+                    <a href="https://www.researchgate.net/publication/386532885_A_SURVEY_OF_FORWARDING_METHODS_AND_ROUTING_PROTOCOLS_IN_VEHICULAR_AD_HOC_NETWORKS"
+                        target="_blank" rel="noopener noreferrer">
+                        A Survey of Forwarding Methods and Routing Protocols in Vehicular Ad Hoc Networks
+                    </a>
+                </li>
+
+                <li>
+                    <a href="https://www.ijset.in/wp-content/uploads/2017/04/paper-3_Cloud.pdf"
+                        target="_blank" rel="noopener noreferrer">
+                        An algorithm proposed for enhancing the performance of GPSR
+                    </a>
+                </li>
+
+                <li>
+                    <a href="https://www.csit.carleton.ca/~msthilaire/Tech_Report/2011-GRPreport.pdf"
+                        target="_blank" rel="noopener noreferrer">
+                        A Survey on Geographic Routing Protocols for Mobile Ad hoc Networks
+                    </a>
+                </li>
+
+                <li>
+                    <a href="https://web.itu.edu.tr/altilar/papers/TEHOSS2006.pdf"
+                        target="_blank" rel="noopener noreferrer">
+                        The Challenges and the Approaches for the Geographic Routing Protocols in Wireless Sensor Networks
+                    </a>
+                </li>
+
+                <li>
+                    <a href="https://scispace.com/topics/geographic-routing-1c8ctzrh"
+                        target="_blank" rel="noopener noreferrer">
+                        Geographic routing | Publications, Citations and Related Topics
+                    </a>
+                </li>
+
+                <li>
+                    <a href="https://www.researchgate.net/publication/358694288_The_Impact_of_Mobility_Models_on_Geographic_Routing_in_Multi-Hop_Wireless_Networks_and_Extensions_-A_Survey"
+                        target="_blank" rel="noopener noreferrer">
+                        The Impact of Mobility Models on Geographic Routing in Multi-Hop Wireless Networks and Extensions: A Survey
+                    </a>
+                </li>
+
+                <li>
+                    <a href="https://www.researchgate.net/publication/363005113_LDAB-GPSR_Location_PreDiction_with_Adaptive_Beaconing_-_Greedy_Perimeter_Stateless_Routing_Protocol_for_Mobile_Ad_Hoc_Networks"
+                        target="_blank" rel="noopener noreferrer">
+                        LDAB-GPSR: Location PreDiction with Adaptive Beaconing – Greedy Perimeter Stateless Routing Protocol for MANETs
+                    </a>
+                </li>
+
+                <li>
+                    <a href="https://allreviewjournal.com/assets/archives/2017/vol2issue6/2-6-290-849.pdf"
+                        target="_blank" rel="noopener noreferrer">
+                        A survey of various geographic routing protocols on the basis of performance parameters in Mobile Ad-hoc Network
+                    </a>
+                </li>
+
+                <li>
+                    <a href="https://www.cise.ufl.edu/~helmy/papers/DSon-WCNC-04-published.pdf"
+                        target="_blank" rel="noopener noreferrer">
+                        The effect of mobility-induced location errors on geographic routing in ad hoc networks
+                    </a>
+                </li>
+
+                <li>
+                    <a href="https://www.researchgate.net/publication/232621434_Greedy_Forwarding_with_Virtual_Destination_Strategy_for_Geographic_Routing_in_Wireless_Sensor_Networks"
+                        target="_blank" rel="noopener noreferrer">
+                        Greedy Forwarding with Virtual Destination Strategy for Geographic Routing in Wireless Sensor Networks
+                    </a>
+                </li>
+
+                <li>
+                    <a href="https://www.usenix.org/events/nsdi05/tech/full_papers/kim/kim_html"
+                        target="_blank" rel="noopener noreferrer">
+                        Geographic Routing Made Practical - USENIX
+                    </a>
+                </li>
+
+                <li>
+                    <a href="https://pdfs.semanticscholar.org/9421/224e6e903652a2e7b7dfe85deb81ae4a5c96.pdf"
+                        target="_blank" rel="noopener noreferrer">
+                        Network size variation of geographical aided routing protocols in MANET
+                    </a>
+                </li>
+
+                <li>
+                    <a href="https://engineering.purdue.edu/~ychu/publications/infocom05_ghls.pdf"
+                        target="_blank" rel="noopener noreferrer">
+                        Performance Comparison of Scalable Location Services
+                    </a>
+                </li>
+
+                <li>
+                    <a href="https://www.cs.ucla.edu/classes/fall03/cs218/paper/p96-rao.pdf"
+                        target="_blank" rel="noopener noreferrer">
+                        Geographic Routing without Location Information
+                    </a>
+                </li>
+
+                <li>
+                    <a href="https://uknowledge.uky.edu/cgi/viewcontent.cgi?article=1002&context=cs_etds"
+                        target="_blank" rel="noopener noreferrer">
+                        Efficient Greedy-Face-Greedy Geographic Routing Protocols in Mobile Ad Hoc and Sensor Networks
+                    </a>
+                </li>
+            </ol>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Trabalho de Curso da Disciplina Redes de Computadores I (EEL878) da UFRJ.</p>
+    </footer>
+
+</body>
+
+</html>
