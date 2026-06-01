@@ -270,7 +270,7 @@
             <p>Na prática, a literatura mostra que esse processo de recuperação é uma das partes mais delicadas do
                 roteamento geográfico. Para que o pacote contorne corretamente uma região sem conectividade, o grafo da
                 rede precisa ser simplificado sem criar cruzamentos indevidos entre enlaces. Essa etapa é importante
-                porque transforma uma decisão aparentemente simples — “ir para o vizinho mais próximo” — em um processo
+                porque transforma uma decisão aparentemente simples, “ir para o vizinho mais próximo”, em um processo
                 capaz de lidar com obstáculos, falhas de comunicação e áreas sem nós intermediários.</p>
             <h3>Desafios em Ambientes Tridimensionais e Geocasting</h3>
             <p>Em Redes de Drones (FANETs), a planarização de grafos em 3D é geometricamente impossível, tornando a
@@ -319,12 +319,6 @@
                     Galaxy atuem como "Find Nodes" para localizar SmartTags e relógios.</li>
             </ul>
 
-            <p>Do ponto de vista de Redes de Computadores, essas redes de busca offline funcionam como uma forma de
-                comunicação oportunista: o rastreador não precisa estar conectado diretamente à internet, pois utiliza
-                dispositivos de terceiros como pontes temporárias até a nuvem. Esse conceito é semelhante à ideia de
-                redes tolerantes a atraso, nas quais a mensagem pode ser carregada por nós intermediários até encontrar
-                uma conexão disponível.</p>
-
             <h3>Comunicação entre serviços: Apple e Samsung</h3>
 
             <p> Os serviços de localização das duas empresas se comunicam apenas para fins de segurança e privacidade, 
@@ -347,10 +341,7 @@
     
             </ul>
 
-            
-
             <h3>Conectividade Industrial e LPWAN</h3>
-
 
             <p>Para rastreamento de veículos em frotas onde a densidade de smartphones é baixa, utilizam-se protocolos
                 de baixa
@@ -393,11 +384,6 @@
                     intenção e a segurança humana.</li>
             </ul>
 
-            <p>Além da tecnologia de rádio utilizada, a precisão de um sistema de localização também depende do ambiente
-                físico. Em locais fechados, sinais podem sofrer reflexão, bloqueio por paredes e interferência de outros
-                dispositivos. Por isso, tecnologias como UWB tendem a ser mais precisas que estimativas por RSSI, pois
-                medem o tempo de propagação do sinal em vez de depender apenas da intensidade recebida.</p>
-
             <h3>Segurança e Privacidade no Ciclo de Localização</h3>
             <p>A ubíquidade da localização traz riscos severos de perseguição (stalking).</p>
 
@@ -415,11 +401,11 @@
                 esses dados, usar criptografia e informar o usuário quando houver risco de rastreamento não autorizado.</p>
         </section>
 
-        <section id="complemento">
-            <h2>Tópicos Complementares da Pesquisa</h2>
+        <section id="p4">
+            <h2>TFatores que Influenciam o Desempenho da Geolocalização</h2>
 
             <h3>Serviços de Localização em Redes Ad Hoc</h3>
-            <p>Um ponto importante da bibliografia é que o roteamento geográfico não depende apenas de saber a posição
+            <p>Um ponto importante é que o roteamento geográfico não depende apenas de saber a posição
                 dos vizinhos imediatos. Para enviar um pacote até um destino, o nó de origem também precisa descobrir ou
                 estimar onde esse destino está. Por isso, alguns trabalhos estudam serviços de localização escaláveis,
                 responsáveis por armazenar e atualizar a posição dos nós sem exigir que toda a rede conheça toda a
@@ -431,7 +417,7 @@
                 como critério de roteamento.</p>
 
             <h3>Impacto da Mobilidade e dos Erros de Posição</h3>
-            <p>Outro tema recorrente nas referências é o efeito da mobilidade. Em redes móveis, a posição usada para
+            <p>Em redes móveis, a posição usada para
                 tomar a decisão de roteamento pode ficar desatualizada rapidamente. Isso acontece porque os nós continuam
                 se deslocando entre uma atualização de beacon e outra. Como consequência, um vizinho escolhido como
                 próximo salto pode sair do alcance de transmissão antes que o pacote seja entregue.</p>
