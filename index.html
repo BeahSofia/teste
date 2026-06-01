@@ -258,50 +258,6 @@
                 eliminando a necessidade de manter tabelas de roteamento globais complexas.
             </p>
 
-            <h3>Variações do Encaminhamento Guloso</h3>
-            <p>Embora a ideia geral do roteamento guloso seja escolher o próximo salto que mais se aproxima do destino,
-                a bibliografia mostra que existem diferentes critérios para definir o que significa "melhor avanço". Em
-                algumas propostas, o nó escolhido é aquele que maximiza o progresso em direção ao destino; em outras, é o
-                vizinho mais próximo com algum avanço positivo; e há ainda estratégias baseadas no menor desvio angular
-                em relação à direção do destino. [3]</p>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Estratégia</th>
-                        <th>Critério usado</th>
-                        <th>Vantagem principal</th>
-                        <th>Limitação</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td data-label="Estratégia">MFR - Most Forward within Radius</td>
-                        <td data-label="Critério usado">Escolhe o vizinho que gera o maior progresso projetado em direção ao destino.</td>
-                        <td data-label="Vantagem principal">Pode reduzir o número de saltos.</td>
-                        <td data-label="Limitação">Pode escolher enlaces longos e mais instáveis.</td>
-                    </tr>
-                    <tr>
-                        <td data-label="Estratégia">NFP - Nearest with Forward Progress</td>
-                        <td data-label="Critério usado">Escolhe o vizinho mais próximo que ainda representa avanço.</td>
-                        <td data-label="Vantagem principal">Tende a reduzir colisões e perdas por enlaces muito longos.</td>
-                        <td data-label="Limitação">Pode aumentar o número total de saltos.</td>
-                    </tr>
-                    <tr>
-                        <td data-label="Estratégia">Distância Euclidiana mínima</td>
-                        <td data-label="Critério usado">Escolhe o vizinho com menor distância direta até o destino.</td>
-                        <td data-label="Vantagem principal">É simples e intuitivo de implementar.</td>
-                        <td data-label="Limitação">Ainda pode cair em máximos locais.</td>
-                    </tr>
-                    <tr>
-                        <td data-label="Estratégia">Compass Routing</td>
-                        <td data-label="Critério usado">Escolhe o vizinho cujo ângulo está mais alinhado com a direção do destino.</td>
-                        <td data-label="Vantagem principal">Busca manter o pacote na direção correta.</td>
-                        <td data-label="Limitação">Nem sempre minimiza distância ou número de saltos.</td>
-                    </tr>
-                </tbody>
-            </table>
-
             <h3>Recuperação de Vazios e Roteamento de Perímetro</h3>
             <p>O modo guloso falha quando um nó não possui vizinhos mais próximos do destino do que ele mesmo, fenômeno
                 conhecido como
@@ -313,20 +269,6 @@
                 possa ser
                 retomado.</p>
 
-            <h3>Como Funciona a Planarização</h3>
-            <p>Para que o roteamento de face funcione corretamente, o grafo usado no modo de perímetro precisa ser
-                planar, ou seja, suas arestas não devem se cruzar no plano. Como uma rede sem fio real pode conter muitos
-                enlaces cruzados, protocolos geográficos constroem um subgrafo planar localmente. Dois métodos clássicos
-                são o <strong>Gabriel Graph (GG)</strong> e o <strong>Relative Neighborhood Graph (RNG)</strong>. Ambos
-                decidem se um enlace entre dois nós deve ser mantido ou removido com base na posição dos vizinhos de um
-                salto. [3][11]</p>
-
-            <ul>
-                <li><strong>Gabriel Graph:</strong> mantém uma aresta se não existir outro nó dentro do círculo que tem a aresta como diâmetro.</li>
-                <li><strong>Relative Neighborhood Graph:</strong> mantém uma aresta se não existir outro nó na região de interseção entre os círculos centrados nos dois extremos da aresta.</li>
-                <li><strong>Regra da mão direita:</strong> no roteamento de face, o pacote segue a próxima aresta em sentido horário ou anti-horário, percorrendo a borda da face até encontrar uma possibilidade de progresso.</li>
-            </ul>
-
             <h3>Desafios em Ambientes Tridimensionais e Geocasting</h3>
             <p>Em Redes de Drones (FANETs), a planarização de grafos em 3D é geometricamente impossível, tornando a
                 recuperação de
@@ -336,65 +278,6 @@
                 geográfico ao definir uma
                 "região de interesse" como destino, onde todos os nós dentro de uma área específica devem receber o
                 pacote.</p>
-
-            <h3>Mobilidade, Erros de Localização e Perda de Desempenho</h3>
-            <p>Um ponto importante para redes móveis é que a posição conhecida por um nó pode ficar desatualizada entre
-                dois beacons consecutivos. Em redes com alta velocidade, como VANETs, ou com movimentos difíceis de
-                prever, a decisão de encaminhamento pode ser tomada com base em coordenadas antigas. Isso pode fazer o
-                pacote escolher um vizinho que já se afastou, provocar perda de enlaces e reduzir a taxa de entrega. A
-                literatura mostra que o intervalo de beacon, a velocidade dos nós e o modelo de mobilidade influenciam
-                diretamente métricas como taxa de entrega, transmissões desperdiçadas e número de enlaces perdidos. [6][9]</p>
-        </section>
-
-        <section id="servicos-localizacao">
-            <h2>Serviços de Localização em Redes Geográficas</h2>
-            <p>Para que um pacote seja encaminhado geograficamente, o nó de origem precisa conhecer a posição do destino.
-                Em redes pequenas, essa informação poderia ser disseminada por inundação, mas essa abordagem não escala
-                bem. Por isso, a bibliografia apresenta os <strong>serviços de localização</strong>, que funcionam como
-                uma camada complementar ao roteamento: eles armazenam atualizações de posição e respondem consultas sobre
-                onde um nó se encontra naquele momento. [13]</p>
-
-            <h3>Flooding versus Rendezvous</h3>
-            <p>Os serviços baseados em <em>flooding</em> espalham atualizações ou consultas por grande parte da rede. Eles
-                são simples, mas consomem largura de banda e energia. Já os serviços baseados em <em>rendezvous</em>
-                definem alguns nós como responsáveis por guardar a posição de outros nós. Assim, em vez de perguntar a
-                todos, o remetente envia a consulta para uma região ou conjunto de servidores de localização. [13]</p>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Serviço</th>
-                        <th>Ideia central</th>
-                        <th>Custo teórico citado</th>
-                        <th>Interpretação prática</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td data-label="Serviço">XYLS</td>
-                        <td data-label="Ideia central">Atualizações seguem uma direção e consultas seguem outra, formando quóruns que se cruzam.</td>
-                        <td data-label="Custo teórico citado">\(O(\sqrt{N})\)</td>
-                        <td data-label="Interpretação prática">Mais simples que hierarquias, mas pode gerar mais tráfego conforme a rede cresce.</td>
-                    </tr>
-                    <tr>
-                        <td data-label="Serviço">GLS</td>
-                        <td data-label="Ideia central">Divide a área em uma hierarquia de grades e escolhe servidores em diferentes níveis.</td>
-                        <td data-label="Custo teórico citado">\(O(\log N)\)</td>
-                        <td data-label="Interpretação prática">Escala bem em teoria, mas pode sofrer com mobilidade e constantes de implementação.</td>
-                    </tr>
-                    <tr>
-                        <td data-label="Serviço">GHLS</td>
-                        <td data-label="Ideia central">Usa hashing geográfico para mapear um nó a uma região responsável por sua posição.</td>
-                        <td data-label="Custo teórico citado">\(O(1)\)</td>
-                        <td data-label="Interpretação prática">É conceitualmente simples e pode reduzir pacotes de controle em cenários práticos.</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <p>Esse ponto conecta diretamente o "Pacote Indo" e o "Pacote Voltando": antes de ir, o pacote precisa saber
-                para qual coordenada ir; depois, o nó móvel precisa voltar a informar sua nova posição para que futuras
-                consultas não usem dados antigos. Portanto, localização não é apenas uma função de aplicação, mas também
-                uma função de controle da própria rede.</p>
         </section>
 
         <section id="p2">
@@ -426,14 +309,6 @@
                 <li><strong>SmartThings Find:</strong> A Samsung opera modelo similar, permitindo que dispositivos
                     Galaxy atuem como "Find Nodes" para localizar SmartTags e relógios.</li>
             </ul>
-
-            <h3>Relação com Redes Ad Hoc</h3>
-            <p>Mesmo que redes de busca de objetos perdidos sejam implementadas por empresas em ecossistemas fechados,
-                a lógica geral se aproxima de redes ad hoc: dispositivos próximos cooperam temporariamente, trocam sinais
-                de curto alcance e ajudam a transportar informação de localização até uma infraestrutura maior. A diferença
-                é que, no caso comercial, a rede colaborativa normalmente usa smartphones como intermediários e servidores
-                em nuvem para consolidar os relatos, enquanto nas MANETs acadêmicas a própria rede pode operar sem
-                infraestrutura fixa. [3][13]</p>
 
             <h3>Comunicação entre serviços: Apple e Samsung</h3>
 
@@ -475,14 +350,6 @@
                     áreas rurais,
                     permitindo redes privadas sem custo de operadora.</li>
             </ul>
-
-            <h3>Telemetria, Energia e Frequência de Atualização</h3>
-            <p>Em sistemas de rastreamento, não basta saber a posição: é necessário decidir com que frequência ela será
-                enviada. Atualizações muito frequentes aumentam a precisão temporal, mas consomem energia, ocupam canal
-                de comunicação e podem congestionar a rede. Atualizações muito raras economizam bateria, porém deixam a
-                informação antiga e reduzem a utilidade do sistema. Esse equilíbrio é semelhante ao problema dos beacons
-                em roteamento geográfico: o nó precisa informar sua posição, mas o excesso de mensagens de controle reduz
-                a eficiência geral. [4][9][13]</p>
         </section>
 
         <section id="p3">
@@ -517,92 +384,17 @@
                     alertas sonoros e notificações digitais após 30 minutos de separação do dono.</li>
 
             </ul>
-
-            <h3>Precisão versus Confiabilidade de Rede</h3>
-            <p>A precisão física da localização não garante, sozinha, que o roteamento será correto. A bibliografia sobre
-                roteamento geográfico mostra que rádios reais nem sempre seguem o modelo ideal de disco unitário, no qual
-                todos os nós dentro de um raio fixo se comunicam e todos fora dele não se comunicam. Obstáculos,
-                interferência, multipercurso e enlaces assimétricos podem criar grafos de conectividade irregulares.
-                Assim, mesmo com coordenadas aparentemente corretas, o protocolo pode errar ao planarizar o grafo ou ao
-                escolher o próximo salto. [11]</p>
-
-            <h3>Aplicações em Sensores e Segurança</h3>
-            <p>As referências sobre redes de sensores sem fio destacam que o roteamento geográfico é especialmente útil
-                em aplicações como segurança residencial, recuperação de desastres, detecção de poluição, busca e
-                salvamento e agricultura. Nessas aplicações, os nós costumam ter limitações de energia, processamento e
-                alcance de rádio. Por isso, reduzir tabelas globais, evitar inundação desnecessária e usar decisões locais
-                são objetivos importantes para prolongar o tempo de vida da rede. [4]</p>
         </section>
 
-        <section id="comparativo-final">
-            <h2>Comparação entre Abordagens de Localização</h2>
-            <p>Com base no estudo, é possível organizar os sistemas de geolocalização pessoal e de roteamento em três
-                camadas principais: a camada de <strong>posicionamento</strong>, que estima onde o dispositivo está; a
-                camada de <strong>comunicação</strong>, que transporta beacons, consultas e respostas; e a camada de
-                <strong>aplicação</strong>, que transforma a localização em serviço útil, como rastrear uma pessoa,
-                encontrar um objeto, monitorar uma frota ou entregar pacotes em uma MANET.</p>
+        <section id="sintese-tecnica">
+            <h2>Síntese Técnica do Estudo</h2>
+            <p>Com base na bibliografia consultada, os sistemas de geolocalização pessoal podem ser entendidos como a combinação de três etapas: estimar a posição do dispositivo, transmitir essa posição pela rede e utilizar essa informação para tomada de decisão. No roteamento geográfico, a posição orienta o caminho do pacote; no rastreamento pessoal, a posição retorna ao usuário como uma informação de localização.</p>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Contexto</th>
-                        <th>Objetivo</th>
-                        <th>Tecnologias/Protocolos</th>
-                        <th>Principal desafio</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td data-label="Contexto">MANET/VANET/FANET</td>
-                        <td data-label="Objetivo">Encaminhar pacotes sem depender de infraestrutura fixa.</td>
-                        <td data-label="Tecnologias/Protocolos">GPSR, face routing, geocasting, serviços de localização.</td>
-                        <td data-label="Principal desafio">Mobilidade, vazios de roteamento e enlaces instáveis.</td>
-                    </tr>
-                    <tr>
-                        <td data-label="Contexto">Rastreamento pessoal</td>
-                        <td data-label="Objetivo">Encontrar pessoas, objetos ou dispositivos próximos.</td>
-                        <td data-label="Tecnologias/Protocolos">BLE, UWB, redes colaborativas e alertas de segurança.</td>
-                        <td data-label="Principal desafio">Privacidade, abuso por rastreamento e autonomia de bateria.</td>
-                    </tr>
-                    <tr>
-                        <td data-label="Contexto">Rastreamento industrial</td>
-                        <td data-label="Objetivo">Monitorar veículos, cargas, sensores e ativos em grande área.</td>
-                        <td data-label="Tecnologias/Protocolos">LPWAN, LTE-M, NB-IoT, LoRaWAN e telemetria periódica.</td>
-                        <td data-label="Principal desafio">Cobertura, custo operacional e frequência de atualização.</td>
-                    </tr>
-                    <tr>
-                        <td data-label="Contexto">Redes de sensores</td>
-                        <td data-label="Objetivo">Coletar dados de ambiente e encaminhá-los com baixo consumo.</td>
-                        <td data-label="Tecnologias/Protocolos">Roteamento geográfico, agregação de dados e nós sensores.</td>
-                        <td data-label="Principal desafio">Energia, escalabilidade e falhas de nós.</td>
-                    </tr>
-                </tbody>
-            </table>
+            <p>As referências sobre MANETs, VANETs e redes de sensores mostram que a principal vantagem do roteamento geográfico é a escalabilidade: em vez de manter rotas completas para todos os destinos, cada nó toma decisões locais com base nas coordenadas dos vizinhos. Porém, essa abordagem depende de localização atualizada, boa conectividade sem fio e mecanismos de recuperação quando o encaminhamento guloso encontra vazios de roteamento.</p>
+
+            <p>Já nos sistemas de rastreamento pessoal e industrial, o desafio deixa de ser apenas encaminhar pacotes e passa a envolver privacidade, consumo de energia, frequência de atualização e precisão. Tecnologias como BLE, UWB, LTE-M, NB-IoT e LoRaWAN mostram que não existe uma única solução ideal: cada aplicação escolhe um equilíbrio diferente entre alcance, custo, bateria e precisão.</p>
         </section>
 
-        <section id="limitacoes">
-            <h2>Limitações Técnicas e Pontos Críticos</h2>
-            <p>Apesar das vantagens de escalabilidade, os sistemas baseados em geolocalização dependem de hipóteses que
-                nem sempre são satisfeitas em ambientes reais. A primeira é a precisão da posição: se o nó acredita estar
-                em uma coordenada diferente da real, suas decisões de roteamento e suas mensagens de localização podem
-                induzir outros nós ao erro. A segunda é a regularidade do rádio: em teoria, o alcance sem fio pode ser
-                modelado como um círculo; na prática, paredes, veículos, pessoas, relevo, interferência e multipercurso
-                tornam esse alcance irregular. [9][11]</p>
-
-            <p>Outra limitação é o custo de controle. Beacons, atualizações de localização, consultas a servidores e
-                mensagens de recuperação de rota não carregam necessariamente os dados finais da aplicação, mas consomem
-                recursos da rede. Portanto, existe um compromisso entre precisão, atualização, escalabilidade e economia
-                de energia. Esse compromisso aparece tanto em MANETs acadêmicas quanto em rastreadores reais, sensores
-                industriais e sistemas de localização pessoal.</p>
-
-            <ul>
-                <li><strong>Alta mobilidade:</strong> aumenta a chance de informação desatualizada e quebra de enlaces.</li>
-                <li><strong>Baixa densidade de nós:</strong> favorece vazios de roteamento e perda de conectividade.</li>
-                <li><strong>Excesso de beacons:</strong> melhora a atualização, mas aumenta overhead e consumo energético.</li>
-                <li><strong>Rádio não ideal:</strong> dificulta planarização e pode provocar falhas persistentes.</li>
-                <li><strong>Privacidade:</strong> exige criptografia, autenticação, consentimento e mecanismos antiabuso.</li>
-            </ul>
-        </section>
 
         <section id="conclusao">
             <h2>Conclusão</h2>
